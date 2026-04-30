@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Encuentros PTU NeoGénesis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container my-4">
+        <h1>Generador de Encuentros Aleatorios (PTU NeoGénesis)</h1>
+        
+        <div class="row g-3 mb-4">
+            
+            <div class="col-12 col-md-6 col-lg-3 form-group">
+                <label>Hábitat(s):*</label>
+                <select id="habitats" multiple size="5" class="w-100">
+                    <option value="Todos" selected>Todos</option>
+                    <option value="Agua Dulce">Agua Dulce</option>
+                    <option value="Bosque">Bosque</option>
+                    <option value="Cueva">Cueva</option>
+                    <option value="Desierto">Desierto</option>
+                    <option value="Montaña">Montaña</option>
+                    <option value="Océano">Océano</option>
+                    <option value="Pantano">Pantano</option>
+                    <option value="Playa">Playa</option>
+                    <option value="Pradera">Pradera</option>
+                    <option value="Selva">Selva</option>                   
+                    <option value="Taiga">Taiga</option>
+                    <option value="Tundra">Tundra</option>
+                    <option value="Urbano">Urbano</option>
+                    <option value="Ultra-Espacio">Ultra-Espacio</option>
+                </select>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3 form-group">
+                <label>Tipo(s):*</label>
+                <select id="tipos" multiple size="5" class="w-100">
+                    <option value="Todos" selected>Todos</option>
+                    <option value="Normal">Normal</option><option value="Fuego">Fuego</option>
+                    <option value="Agua">Agua</option><option value="Planta">Planta</option>
+                    <option value="Eléctrico">Eléctrico</option><option value="Hielo">Hielo</option>
+                    <option value="Lucha">Lucha</option><option value="Veneno">Veneno</option>
+                    <option value="Tierra">Tierra</option><option value="Volador">Volador</option>
+                    <option value="Psíquico">Psíquico</option><option value="Bicho">Bicho</option>
+                    <option value="Roca">Roca</option><option value="Fantasma">Fantasma</option>
+                    <option value="Dragón">Dragón</option><option value="Siniestro">Siniestro</option>
+                    <option value="Acero">Acero</option><option value="Hada">Hada</option>
+                </select>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3 form-group">
+                <label>Región(es):*</label>
+                <select id="regiones" multiple size="5" class="w-100">
+                    <option value="Todas" selected>Todas</option>
+                    <option value="Kanto">Kanto</option>
+                    <option value="Johto">Johto</option>
+                    <option value="Hoenn">Hoenn</option>
+                    <option value="Sinnoh">Sinnoh</option>
+                    <option value="Teseleia">Teselia</option>
+                    <option value="Kalos">Kalos</option>
+                    <option value="Alola">Alola</option>
+                    <option value="Galar">Galar</option>
+                    <option value="Hisui">Hisui</option>
+                    <option value="Paldea">Paldea</option>
+                </select>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3 form-group">
+                <label>Rango de Nivel (1-60):</label>
+                <div class="level-inputs d-flex align-items-center gap-2 mb-2">
+                    <input type="number" id="nivelMin" value="1" min="1" max="60" class="w-50"> a 
+                    <input type="number" id="nivelMax" value="5" min="1" max="60" class="w-50">
+                </div>
+                <label>Cantidad de Pokémon:</label>
+                <input type="number" id="cantidad" value="1" min="1" class="w-100">
+            </div>
+
+            <div class="col-12">
+                <legend class="nota">Nota: Si se quiere seleccionar múltiples opciones en alguna de las opciones marcadas con asterisco (*) se debe mantener presionado la tecla Control (ctrl) mientras se da clic a cada opción a elegir.</legend>
+            </div>
+
+            <div class="col-12 form-group checkboxes mt-2">
+                <label><input type="checkbox" id="chkLegendarios"> ¿Incluir Legendarios?</label>
+                <label><input type="checkbox" id="chkEvolucionesEstrictas"> Evoluciones Estrictas (Ej: No Flygon nv. 10)</label>
+                <label><input type="checkbox" id="chkForzarEvolucion"> Forzar Evoluciones (Ej: No Caterpie nv. 15)</label>
+                <label><input type="checkbox" id="chkMegaEvoluciones"> ¿Incluir Mega Evoluciones?</label>
+            </div>
+        </div>
+
+        <button id="btnGenerar">Generar Encuentro</button>
+
+        <div id="resultados" class="mt-4">
+            <h2>Resultados (Tabla y archivos JSON para VTT)</h2>
+            <div id="tablaResultados" class="table-responsive"></div>
+        </div>
+    </div>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
