@@ -8247,7 +8247,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 30,
-        "nextStage": "Slowbro",
+        "nextStage": "Slowbro, Slowking",
         "criteria": "Nivel 30"
       },
       "megaEvo": {
@@ -8481,7 +8481,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 30,
-        "nextStage": "Slowbro Galar",
+        "nextStage": "Slowbro Galar, Slowking Galar",
         "criteria": "Nivel 30"
       },
       "megaEvo": {
@@ -11913,7 +11913,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 30,
-        "nextStage": "Weezing",
+        "nextStage": "Weezing, Weezing Galar",
         "criteria": "Nivel 30"
       },
       "megaEvo": {
@@ -13707,7 +13707,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 30,
-        "nextStage": "Scizor",
+        "nextStage": "Scizor, Kleavor",
         "criteria": "Nivel 30"
       },
       "megaEvo": {
@@ -22755,7 +22755,7 @@
       "evolution": {
         "stage": 2,
         "evoLevel": 35,
-        "nextStage": "Ursaluna",
+        "nextStage": "Ursaluna, Ursaluna Carmesí",
         "criteria": "Nivel 35"
       },
       "megaEvo": {
@@ -37107,7 +37107,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 20,
-        "nextStage": "Wormadam Planta (Mujer), Wormadam Arena (Mujer), Wormadam Basura (Mujer), Mothim (Macho)",
+        "nextStage": "Wormadam Planta (hembra), Wormadam Arena (hembra), Wormadam Basura (hembra), Mothim (Macho)",
         "criteria": "Nivel 20"
       },
       "megaEvo": {
@@ -37497,7 +37497,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 20,
-        "nextStage": "Vespiquen (Mujer)",
+        "nextStage": "Vespiquen (hembra)",
         "criteria": "Nivel 20"
       },
       "megaEvo": {
@@ -45297,7 +45297,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 25,
-        "nextStage": "Basculegion (M/H)",
+        "nextStage": "Basculegion M, Basculegion H",
         "criteria": "Nivel 25"
       },
       "megaEvo": {
@@ -55281,7 +55281,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 25,
-        "nextStage": "Meowstic (M/H)",
+        "nextStage": "Meowstic Macho, Meowstic Hembra",
         "criteria": "Nivel 25"
       },
       "megaEvo": {
@@ -55593,7 +55593,7 @@
       "evolution": {
         "stage": 2,
         "evoLevel": 40,
-        "nextStage": "Aegislash",
+        "nextStage": "Aegislash Escudo, Aegislash Filo",
         "criteria": "Nivel 40"
       },
       "megaEvo": {
@@ -61911,7 +61911,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 30,
-        "nextStage": "Salazzle (Mujer)",
+        "nextStage": "Salazzle (hembra)",
         "criteria": "Nivel 30"
       },
       "megaEvo": {
@@ -70725,7 +70725,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 20,
-        "nextStage": "Oinkologne (M/H)",
+        "nextStage": "Oinkologne Macho, Oinkologne Hembra",
         "criteria": "Nivel 20"
       },
       "megaEvo": {
@@ -72363,7 +72363,7 @@
       "evolution": {
         "stage": 1,
         "evoLevel": 25,
-        "nextStage": "Armarouge",
+        "nextStage": "Armarouge, Ceruledge",
         "criteria": "Nivel 25"
       },
       "megaEvo": {

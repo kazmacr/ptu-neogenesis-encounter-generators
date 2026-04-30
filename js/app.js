@@ -2,16 +2,24 @@ let pokedexComunes = []; // Lista para almacenar toda la info del JSON de la Pok
 let pokedexLegendaria = []; // Lista para almacenar toda la info del JSON de la Pokédex de los legendarios
 let evoMap = {}; // Diccionario para poder incluir o excluir evoluciones o bichos sobre nivel
 
+// Función para limpiar nombres
+function normalizarNombre(nombre) {
+    return nombre.toLowerCase()
+    .replace(/\(macho\)|\(hembra\)/g, '') // Borra los géneros
+    // .replace(/[^a-z0-9]/g, '') // Borra cualquier caracter no alfanumerico.
+    // .replace(/\s+/g, ' ') // Limpia espacios dobles si quedaron
+    .trim(); // Quita espacios al inicio y al final
+}
 //Función para convertir los rangos de textos de las pokédex regionales a rangos números
 function generarDex(rangos) {
     let dex = new Set();
     rangos.forEach(r => {
-        if(typeof r === 'number'){ // Aquí si se encuentra un número real lo agrega al arreglo sin más
+        if (typeof r === 'number') { // Aquí si se encuentra un número real lo agrega al arreglo sin más
             dex.add(r);
         }
-        else{ // Si se encuentra un texto que tenga guión (-) toma los extremos que son los números y los rellena con un for
+        else { // Si se encuentra un texto que tenga guión (-) toma los extremos que son los números y los rellena con un for
             let [inicio, fin] = r.split("-").map(Number);
-            for(let i = inicio; i <= fin ; i++) dex.add(i);
+            for (let i = inicio; i <= fin; i++) dex.add(i);
         }
     });
     return dex; // Regresa todos los números referentes a la dex de dicha región
@@ -27,7 +35,7 @@ const dexRegionales = {
     "Hoenn": generarDex(["252-386", 41, 42, 63, 64, 65, 74, 75, 76, 184, 183, 475, 174, 39, 122, 40, 478, 476, 477, 478]), // Incluye a los pokémons de los juegos ruby, safiro y esmeralda + pre evoluciones, evoluciones y evoluciones ramificadas. Excluir las variantes Alola, Hisui y Galar.
     "Sinnoh": generarDex(["387-493", 315, 190, 198, 185, 122, 113, 226, 108, 111, 112, 114, 125, 126, 239, 240, 133, 134, 135, 136, 215, 81, 82, 200, 193, 207, 137, 233, 280, 281, 282, 299, 355, 356, 361, 362]), // Incluye los pokémons de los juegos diamante, perla y platino + pre evoluciones, evoluciones y evoluciones ramificadas. Excluir las variantes Alola, Hisui y Galar.
     "Teselia": generarDex(["494-649"]), // Incluye los Pokémon de los juegos Blanco y Negro. Excluir las variantes Alola, Hisui y Galar.
-    "Kalos": generarDex(["650-721", 133, 134, 135, 136, 196, 197, 470, 471, ]), // Incluye los Pokémon de los Juegos XY. Excluir las variantes Alola, Hisui y Galar.
+    "Kalos": generarDex(["650-721", 133, 134, 135, 136, 196, 197, 470, 471,]), // Incluye los Pokémon de los Juegos XY. Excluir las variantes Alola, Hisui y Galar.
     "Alola": generarDex(["722-809", 19, 20, 25, 26, 172, 27, 28, 37, 38, 50, 51, 52, 53, 74, 75, 76, 88, 89, 102, 103, 104, 105]), // Incluye a los pokémons de los juegos de sol y luna. En el caso de los números sueltos se debe incluir solo aquellos que tienen Alola en el nombre.
     "Galar": generarDex(["810-898", 52, 77, 78, 79, 80, 83, 110, 109, 122, 144, 145, 146, 439]), // Incluye los pokémons de los juegos espada y escudo. Se incluyen los pokémon de Galar y a Koffing y Mime jr.
     "Hisui": generarDex(["25-26", "35-38", 41, 42, 46, 47, 54, 55, 58, 59, "63-68", "72-78", 81, 82, "92-95", 100, 101, 108, "111-114", 122, 123, 125, 126, 129, 130, 133, 134, 135, 136, 143, 155, 156, 157, 169, 172, 173, 175, 176, 185, 190, 193, "196-198", 200, 201, 207, 208, 211, 212, 214, 215, 216, 217, 220, 221, 223, 224, 226, 233, 234, 239, 240, 242, "265-269", 280, 281, 282, 299, 315, 339, 340, 355, 356, 358, "361-365", "387-493", "501-503", "548-550", 570, 571, 627, 628, 641, 642, 645, 700, "704-706", 712, 713, "722-724", "899-905"]),
@@ -61,14 +69,14 @@ async function init() {
 
         console.log("Se cargaron bien las Pokédexs");
         // Funcion que une las pokédex, si es necesario, y calcula si los bichos evolucionan y/o si habrán sobrenivel
-        // AQUÍ VA LA FUNCIÓN
+        buildEvoMap([...pokedexComunes, ...pokedexLegendaria]);
     } catch (e) {
         console.error('Error al cargar los archivos de los JSON.', e);
         const modal = document.getElementById("myModal");
         const modalMessage = modal.querySelector("p");
-        modalMessage.innerText = 'Error al cargar las bases de datos.' + 
-        'Asegúrese de que los archivos estén en la carpeta /json con los nombres' + 
-        'correctos y que se llamen pokedex_neogenesis.json y pokedex_legendarios_neogenesis.json.';
+        modalMessage.innerText = 'Error al cargar las bases de datos.' +
+            'Asegúrese de que los archivos estén en la carpeta /json con los nombres' +
+            'correctos y que se llamen pokedex_neogenesis.json y pokedex_legendarios_neogenesis.json.';
         modal.classList.add("show");
     }
 }
@@ -78,18 +86,32 @@ async function init() {
  * La función es la de calcular el nivel de evolución y aplicar dicho filtro para incluir o excluir evoluciones o limitar o permitir pokémon 
  * que esten por encima de su nivel evolutivo o obligarlos a evolucionar.
  */
-function buildEvoMap(fullDex){
+function buildEvoMap(fullDex) {
     fullDex.forEach(p => {
-        if(p.system.evolution && p.system.evolution.nextStage){
+        // Se valida si el bicho tiene una siguiente etapa evolutiva
+        if (p.system.evolution && p.system.evolution.nextStage) {
+            // Se extrae el texto que contiene el criteria
             let criteria = p.system.evolution.criteria || "";
-            let match = criteria.match(/\d+/);
-            if(match) {
-                let lvl = parseInt(match[0]);
-                evoMap[p.system.evolution.nextStage] = lvl; // Asigna el nivel mínimo para que haya evoluciones.
-                p.maxUnevolvedLevel = lvl - 1; // Indica hasta que nivel debe generar un Pokémon de etapa anterior, si no cumple se descarta. 
+            let match = criteria.match(/\d+/); // Limpiamos y dejamos solo el número
+
+            // Si no encuentra un número en criteria, usa el evoLevel como respaldo
+            let lvl = match ? parseInt(match[0]) : parseInt(p.system.evolution.evoLevel) || 0;
+
+            if (lvl > 0) {
+                // Separamos por comas las nextStage del bicho si es que las tiene
+                let evoluciones = p.system.evolution.nextStage.split(',').map(s => normalizarNombre(s));
+
+                // Le asignamos ese nivel mínimo a cada una de las evoluciones
+                evoluciones.forEach(evoName =>{
+                    evoMap[evoName] = lvl;
+                });
+
+                // Le indicamos a la etapa actual cuál es su límite antes de evolucionar
+                p.maxUnevolvedLevel = lvl - 1;
             }
         }
     });
+console.log("Mapa de evoluciones generado: ", evoMap);
 }
 
 /**
@@ -104,10 +126,10 @@ function getSelectedValues(id) {
 // Al hacer clic en el botón se realiza la generación de los pokémon
 document.getElementById('btnGenerar').addEventListener('click', () => {
     let fullDex = [...pokedexComunes]; // Se carga la pokédex normal en el arreglo
-    if(document.getElementById('chkLegendarios').checked){ // Si se le da check a la opción de Legendarios se concatena la pokédex legendarios
+    if (document.getElementById('chkLegendarios').checked) { // Si se le da check a la opción de Legendarios se concatena la pokédex legendarios
         fullDex = fullDex.concat(pokedexLegendaria);
     }
-    if(!document.getElementById('chkMegaEvoluciones').checked){ // Si no se marca la opción de Mega evoluciones, estos se descartan de la elección de encuentros
+    if (!document.getElementById('chkMegaEvoluciones').checked) { // Si no se marca la opción de Mega evoluciones, estos se descartan de la elección de encuentros
         fullDex = fullDex.filter(p => !p.name.includes("Mega "));
     }
 
@@ -118,19 +140,19 @@ document.getElementById('btnGenerar').addEventListener('click', () => {
     const minLvl = parseInt(document.getElementById('nivelMin').value);
     const maxLvl = parseInt(document.getElementById('nivelMax').value);
     const cantidad = parseInt(document.getElementById('cantidad').value);
-    const estricto = document.getElementById('chkEvolucionesEstrictas').checked; 
-    const forzar = document.getElementById('chkForzarEvolucion').checked; 
+    const estricto = document.getElementById('chkEvolucionesEstrictas').checked;
+    const forzar = document.getElementById('chkForzarEvolucion').checked;
 
     // Buscar los Pokémons con formas regionales y separarlos de su versión no regional
-    const regionalForm = new Map();
-    fullDex.forEach(p =>{
+    const regionalForms = new Map();
+    fullDex.forEach(p => {
         let imgMatch = p.img.match(/\/(\d+)\.png/);
-        if (imgMatch){
+        if (imgMatch) {
             let dexNum = parseInt(imgMatch[1]);
-            ["Alola", "Galar", "Hisui", "Paldea"].forEach(tag =>{
-                if (p.name.includes(tag)){
-                    if (!regionalFormsAvailability.has(dexNum)) regionalFormsAvailability.set(dexNum, new Set());
-                    regionalFormsAvailability.get(dexNum).add(tag);
+            ["Alola", "Galar", "Hisui", "Paldea"].forEach(tag => {
+                if (p.name.includes(tag)) {
+                    if (!regionalForms.has(dexNum)) regionalForms.set(dexNum, new Set());
+                    regionalForms.get(dexNum).add(tag);
                 }
             });
         }
@@ -144,38 +166,38 @@ document.getElementById('btnGenerar').addEventListener('click', () => {
         // Filtro por tipo
         let t1 = (p.system.type1 || "").toLowerCase();
         let t2 = (p.system.type2 || "").toLowerCase();
-        let tMatch = tipos.includes("Todos") || tipos.includes(t1) || tipos.includes(t2);
+        let tMatch = tipos.includes("todos") || tipos.includes(t1) || tipos.includes(t2);
 
         // Filtro por región prorizando formas regionales
         let rMatch = regiones.includes("Todas");
-        if(!rMatch){
+        if (!rMatch) {
             let imgMatch = p.img.match(/\/(\d+)\.png/);
             let dexNum = imgMatch ? parseInt(imgMatch[1]) : 0;
             let name = p.name;
 
             const tags = ["Alola", "Galar", "Hisui", "Paldea"];
-            let currentPTag = tags.find(tag => name.includes(tags));
+            let currentPTag = tags.find(tag => name.includes(tag));
 
-            if(currentPTag){
+            if (currentPTag) {
                 // Si el Pokémon tiene una forma regional, se verifica si la región seleccionada coincide con su forma regional
-                if(regiones.includes(currentPTag)) rMatch = true;
+                if (regiones.includes(currentPTag)) rMatch = true;
             }
-            else{
+            else {
                 // Si el bicho no tiene una forma regional
                 // 1. Debe de estar al menos en una región seleccionada
                 let allowedInSelectedRegions = regiones.some(r => dexRegionales[r] && dexRegionales[r].has(dexNum));
-                
-                if(allowedInSelectedRegions){
+
+                if (allowedInSelectedRegions) {
                     // 2. Si el Pokémon tiene formas regionales, descartamos la base. Si por ejemplo se elige Alola y sale un Raichu, se descarta el base y se queda la variante Alola.
-                    let hasRegionalConlict = regiones.some(r => 
-                        regionalFormsAvailability.has(dexNum) &&
-                        regionalFormsAvailability.get(dexNum).has(r)
+                    let hasRegionalConlict = regiones.some(r =>
+                        regionalForms.has(dexNum) &&
+                        regionalForms.get(dexNum).has(r)
                     );
 
-                    if(!hasRegionalConlict){
+                    if (!hasRegionalConlict) {
                         rMatch = true;
                     }
-                } 
+                }
             }
         }
 
@@ -185,15 +207,21 @@ document.getElementById('btnGenerar').addEventListener('click', () => {
     let resultados = [];
     let maxIntentos = 1500; // Para evitar loops infinitos en caso de filtros muy estrictos
 
-    while(resultados.length < cantidad && pool.length > 0 && maxIntentos > 0){
+    while (resultados.length < cantidad && pool.length > 0 && maxIntentos > 0) {
         maxIntentos--;
         let rndIndex = Math.floor(Math.random() * pool.length);
         let p = pool[rndIndex];
         let lvl = Math.floor(Math.random() * (maxLvl - minLvl + 1)) + minLvl;
 
-        let minReqLvl = evoMap[p.name] || 1;
-        if(estricto && lvl < minReqLvl) continue; // Si el modo estricto está activo, se descartan los Pokémon que no cumplen el requisito de nivel para su evolución
-        if(forzar && p.maxUnevolvedLevel && lvl > p.maxUnevolvedLevel) continue; // Si el modo forzar evolución está activo, se descartan los Pokémon que pueden evolucionar pero no cumplen el requisito de nivel para generar su forma evolucionada
+        // Se limpian espacios y mayúsculas del nombre del pokémon actual
+        let nombreLimpio = normalizarNombre(p.name);
+
+        // Se busca el nivel en el diccionario
+        let minReqLvl = evoMap[nombreLimpio] || 1;
+
+        // Filtro para la parte de estrictos
+        if (estricto && lvl < minReqLvl) continue; // Si el modo estricto está activo, se descartan los Pokémon que no cumplen el requisito de nivel para su evolución
+        if (forzar && p.maxUnevolvedLevel && lvl > p.maxUnevolvedLevel) continue; // Si el modo forzar evolución está activo, se descartan los Pokémon que pueden evolucionar pero no cumplen el requisito de nivel para generar su forma evolucionada
 
         resultados.push(generarStats(p, lvl)); // Aquí se generan los stats del Pokémon seleccionado con el nivel y la naturaleza correspondiente
     }
@@ -201,15 +229,15 @@ document.getElementById('btnGenerar').addEventListener('click', () => {
     renderResultados(resultados); // Función para mostrar los resultados en el HTML, se encarga de crear las tarjetas con la info de cada Pokémon generado.
 });
 
-function generarStats(p, lvl){
-    let nature = natures[Math.floor(Math.random()*natures.length)];
+function generarStats(p, lvl) {
+    let nature = natures[Math.floor(Math.random() * natures.length)];
     let base = {
         HP: p.system.stats.hp.base, ATK: p.system.stats.atk.base, DEF: p.system.stats.def.base,
         SPATK: p.system.stats.spatk.base, SPDEF: p.system.stats.spdef.base, SPEED: p.system.stats.spd.base
     };
 
     let baseNaturaleza = { ...base };
-    if(nature.up !== nature.down){
+    if (nature.up !== nature.down) {
         baseNaturaleza[nature.up] += 2;
         baseNaturaleza[nature.down] = Math.max(1, baseNaturaleza[nature.down] - 2);
     }
@@ -219,13 +247,13 @@ function generarStats(p, lvl){
     let keys = ["HP", "ATK", "DEF", "SPATK", "SPDEF", "SPEED"];
 
     // Distribución aleatoria de puntos de nivel
-    while(puntos > 0){
-        let k = keys[Math.floor(Math.random()*keys.length)];
+    while (puntos > 0) {
+        let k = keys[Math.floor(Math.random() * keys.length)];
         actual[k] += 1;
         puntos--;
     }
 
-    let maxHP = (lvl * 2) + (actual.HP * 3) +10; // Formula para calcular los PVs
+    let maxHP = (lvl * 2) + (actual.HP * 3) + 10; // Formula para calcular los PVs
 
     let jsonVTT = {
         "CharType": 0, "nickname": "", "species": p.name,
@@ -246,11 +274,11 @@ function generarStats(p, lvl){
     return { p, jsonVTT };
 }
 
-function renderResultados(resultados){
+function renderResultados(resultados) {
     const div = document.getElementById('tabResultados');
     div.innerHTML = ""; // Limpiar resultados anteriores
 
-    if(resultados.length === 0){
+    if (resultados.length === 0) {
         div.innerHTML = "<p class='text-warning mt-3'>No se encontraron Pokémon con esos criterios. Verifique el filtro.</p>";
         return;
     }
@@ -261,19 +289,25 @@ function renderResultados(resultados){
         let tbl = `
             <table class="table table-dark table-bordered mt-2">
                 <tr>
-                    <th>Especie</th><th>Nivel</th><th>Tipos</th><th>Naturaleza</th><th>Vida Máx.</th>
+                    <th>Especie</th><th>Nivel</th><th>Tipos</th><th>Naturaleza</th><th>PVs</th>
                 </tr>
                 <tr>
                     <td>${res.jsonVTT.species}</td><td>${res.jsonVTT.Level}</td>
                     <td><span class="text-capitalize">${res.jsonVTT.type1}</span> / <span class="text-capitalize">${res.jsonVTT.type2}</span></td>
                     <td>${res.jsonVTT.Nature}</td><td>${res.jsonVTT.HP}</td>
                 </tr>
+                <tr><th>ATK</th><th>Def</th><th>SATK</th><th>SDEF</th><th>SPD</th></tr>
+                <tr>
+                    <td>${res.jsonVTT.ATK}</td><td>${res.jsonVTT.DEF}</td>
+                    <td><span>${res.jsonVTT.SPATK}</span></td>
+                    <td>${res.jsonVTT.SPDEF}</td><td>${res.jsonVTT.SPEED}</td>
+                </tr>
             </table>
             <strong class="text-light">Datos para importar a VTT (JSON):</strong><br>
             <textarea class="json-output mt-2" readonly>${JSON.stringify(res.jsonVTT, null, 2)}</textarea>
             `;
-            card.innerHTML = tbl;
-            div.appendChild(card);
+        card.innerHTML = tbl;
+        div.appendChild(card);
     });
 }
 
