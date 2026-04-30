@@ -56,7 +56,7 @@ async function init() {
         const regNormal = await fetch('json/pokedex_neogenesis.json'); // Pokédex de comunes
         pokedexComunes = await regNormal.json();
 
-        const regLegendario = await('json/pokedex_legendarios_neogenesis.json') // Pokédex legendarios
+        const regLegendario = await fetch('json/pokedex_legendarios_neogenesis.json') // Pokédex legendarios
         pokedexLegendaria = await regLegendario.json();
 
         console.log("Se cargaron bien las Pokédexs");
@@ -81,8 +81,8 @@ async function init() {
 function buildEvoMap(fullDex){
     fullDex.forEach(p => {
         if(p.system.evolution && p.system.evolution.nextStage){
-            let criterio = p.system.evolution.criterio || "";
-            let match = criterio.match(/\d+/);
+            let criteria = p.system.evolution.criteria || "";
+            let match = criteria.match(/\d+/);
             if(match) {
                 let lvl = parseInt(match[0]);
                 evoMap[p.system.evolution.nextStage] = lvl; // Asigna el nivel mínimo para que haya evoluciones.
@@ -103,7 +103,7 @@ function getSelectedValues(id) {
 
 // Al hacer clic en el botón se realiza la generación de los pokémon
 document.getElementById('btnGenerar').addEventListener('click', () => {
-    let fullDex = [...pokedexNormal]; // Se carga la pokédex normal en el arreglo
+    let fullDex = [...pokedexComunes]; // Se carga la pokédex normal en el arreglo
     if(document.getElementById('chkLegendarios').checked){ // Si se le da check a la opción de Legendarios se concatena la pokédex legendarios
         fullDex = fullDex.concat(pokedexLegendaria);
     }
@@ -138,7 +138,7 @@ document.getElementById('btnGenerar').addEventListener('click', () => {
 
     let pool = fullDex.filter(p => {
         // Filtro por hábitat
-        let sysHabitat = (p.system.habitat || "").toLowerCase();
+        let sysHabitat = (p.system.habitats || "").toLowerCase();
         let hMatch = habitats.includes("Todos") || habitats.some(h => sysHabitat.includes(h.toLowerCase()));
 
         // Filtro por tipo
@@ -154,7 +154,7 @@ document.getElementById('btnGenerar').addEventListener('click', () => {
             let name = p.name;
 
             const tags = ["Alola", "Galar", "Hisui", "Paldea"];
-            let currentPTag = tag.find(tag => name.includes(tag));
+            let currentPTag = tags.find(tag => name.includes(tags));
 
             if(currentPTag){
                 // Si el Pokémon tiene una forma regional, se verifica si la región seleccionada coincide con su forma regional
@@ -205,8 +205,14 @@ function generarStats(p, lvl){
     let nature = natures[Math.floor(Math.random()*natures.length)];
     let base = {
         HP: p.system.stats.hp.base, ATK: p.system.stats.atk.base, DEF: p.system.stats.def.base,
-        SPATK: p.system.stats.spatk.base, SPDEF: p.system.stats.spdef.base, SPEED: p.system.stats.speed.base
+        SPATK: p.system.stats.spatk.base, SPDEF: p.system.stats.spdef.base, SPEED: p.system.stats.spd.base
     };
+
+    let baseNaturaleza = { ...base };
+    if(nature.up !== nature.down){
+        baseNaturaleza[nature.up] += 2;
+        baseNaturaleza[nature.down] = Math.max(1, baseNaturaleza[nature.down] - 2);
+    }
 
     let actual = { ...baseNaturaleza };
     let puntos = lvl;
@@ -245,7 +251,7 @@ function renderResultados(resultados){
     div.innerHTML = ""; // Limpiar resultados anteriores
 
     if(resultados.length === 0){
-        div.innerHTML = "<p class='text-warning mt-3'>No se encontraron Pokémon con esos criterios.</p>";
+        div.innerHTML = "<p class='text-warning mt-3'>No se encontraron Pokémon con esos criterios. Verifique el filtro.</p>";
         return;
     }
 
