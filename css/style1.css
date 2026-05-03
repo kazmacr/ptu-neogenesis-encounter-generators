@@ -1,0 +1,175 @@
+@media (max-width: 991px) {
+    .nota {
+        /* En pantallas pequeñas ajustamos el margen para que el texto sea legible y no rompa el diseño */
+        margin: 15px 0 30px 0;
+    }
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    margin: 0; 
+    padding: 20px;
+}
+
+.container {
+    max-width: 1100px; 
+    margin: 0 auto;
+    background: #2b2b2b; 
+    padding: 20px; 
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); /* Añadida sombra sutil para profundidad */
+}
+
+h1, h2 { 
+    color: #ffcb05; 
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px; /* Un poco más de respiro bajo el título */
+}
+
+.form-group { 
+    display: flex; 
+    flex-direction: column; 
+}
+
+label { 
+    margin-bottom: 5px; 
+    font-weight: bold; 
+}
+
+/* Mejora visual para selects e inputs */
+select, input[type="number"] {
+    background: #3d3d3d; 
+    color: white; 
+    border: 1px solid #555;
+    padding: 8px; 
+    border-radius: 4px;
+    outline: none; /* Quita el borde azul por defecto al hacer clic en algunos navegadores */
+}
+
+select:focus, input[type="number"]:focus {
+    border-color: #ffcb05; /* Borde amarillo al seleccionar para mejor feedback visual */
+}
+
+.checkboxes { 
+    background-color: rgba(255,255,255,0.05); /* Ligeramente más oscuro para contrastar mejor */
+    border-radius: 8px;
+    border: 1px solid #555;
+    padding: 15px;
+}
+
+.checkboxes label {
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    font-weight: normal; 
+    margin-bottom: 8px;
+    cursor: pointer; /* Cambia el cursor a una manito para indicar que es clickeable */
+}
+
+.nota {
+    display: flex;
+    font-weight: bold;
+    font-size: medium;
+    text-align: justify;
+    color: #ffcb05;
+    margin: 0 0 30px 0; /* Removido el margen de 450px que apretaba el texto innecesariamente en pantallas grandes */
+}
+
+/* Botón Generar mejorado */
+#btnGenerar {
+    background-color: #3b4cca; 
+    color: white; 
+    border: none; 
+    padding: 12px 20px;
+    font-size: 18px; /* Texto un poco más grande */
+    border-radius: 6px; /* Bordes ligeramente más redondeados */
+    cursor: pointer; 
+    font-weight: bold; 
+    width: 100%;
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Transición suave */
+    margin-top: 10px;
+}
+
+#btnGenerar:hover { 
+    background-color: #2a3a9c; 
+}
+
+#btnGenerar:active {
+    transform: scale(0.98); /* Pequeño efecto de "hundimiento" al hacer clic */
+}
+
+/* Estilos de Tabla de Resultados */
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-bottom: 15px; 
+}
+
+th, td { 
+    border: 1px solid #555; /* Borde un poco más claro para no ser tan duro */
+    padding: 10px; 
+    text-align: center; /* Texto centrado para mejor lectura de stats */
+}
+
+th { 
+    background-color: #ffcb05; 
+    color: #1e1e1e; 
+    font-weight: bold;
+}
+
+/* Tarjetas de Pokémon individuales */
+.pokemon-card {
+    background: #333; 
+    border: 1px solid #555; 
+    padding: 20px; /* Un poco más de padding interior */
+    border-radius: 8px; 
+    margin-bottom: 25px; /* Separación clara entre tarjetas */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* El textarea del JSON exportable */
+.json-output {
+    width: 100%; 
+    height: 120px; /* Altura optimizada para JSON de una línea */
+    background: #1a1a1a !important; /* Forzado a oscuro */
+    color: #a6e22e !important; /* Verde estilo consola hacker */
+    font-family: 'Consolas', 'Courier New', monospace; /* Fuentes de código seguras */
+    border: 1px solid #444 !important; 
+    padding: 12px; 
+    resize: vertical;
+    border-radius: 4px;
+}
+
+.json-output:focus {
+    outline: none;
+    border-color: #ffcb05 !important;
+}
+
+/* Clases utilitarias de Bootstrap personalizadas (opcional, si decides usarlas en el HTML) */
+.text-capitalize { text-transform: capitalize; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.me-3 { margin-right: 1rem; }
+.d-flex { display: flex; }
+.align-items-center { align-items: center; }
+
+/* Nuevas secciones de Habilidades, Movimientos y Rasgos */
+.section-title {
+    color: #ffcb05;
+    font-size: 1.1em;
+    border-bottom: 1px solid #555;
+    padding-bottom: 4px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.move-item:last-child {
+    border-bottom: none !important; /* Quita el borde del último movimiento */
+}

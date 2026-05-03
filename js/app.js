@@ -5,11 +5,10 @@ let evoMap = {}; // Diccionario para poder incluir o excluir evoluciones o bicho
 // Función para limpiar nombres
 function normalizarNombre(nombre) {
     return nombre.toLowerCase()
-    .replace(/\(macho\)|\(hembra\)/g, '') // Borra los géneros
-    // .replace(/[^a-z0-9]/g, '') // Borra cualquier caracter no alfanumerico.
-    // .replace(/\s+/g, ' ') // Limpia espacios dobles si quedaron
-    .trim(); // Quita espacios al inicio y al final
+        .replace(/\(macho\)|\(hembra\)/g, '') // Borra los géneros
+        .trim(); // Quita espacios extra al inicio y al final
 }
+
 //Función para convertir los rangos de textos de las pokédex regionales a rangos números
 function generarDex(rangos) {
     let dex = new Set();
@@ -73,11 +72,15 @@ async function init() {
     } catch (e) {
         console.error('Error al cargar los archivos de los JSON.', e);
         const modal = document.getElementById("myModal");
-        const modalMessage = modal.querySelector("p");
-        modalMessage.innerText = 'Error al cargar las bases de datos.' +
-            'Asegúrese de que los archivos estén en la carpeta /json con los nombres' +
-            'correctos y que se llamen pokedex_neogenesis.json y pokedex_legendarios_neogenesis.json.';
-        modal.classList.add("show");
+        if(modal) {
+            const modalMessage = modal.querySelector("p");
+            modalMessage.innerText = 'Error al cargar las bases de datos.' +
+                'Asegúrese de que los archivos estén en la carpeta /json con los nombres' +
+                'correctos y que se llamen pokedex_neogenesis.json y pokedex_legendarios_neogenesis.json.';
+            modal.classList.add("show");
+        } else {
+            alert('Hubo un error al cargar los datos. Asegúrate de que los JSON estén en la carpeta correcta y revisa la consola.');
+        }
     }
 }
 
@@ -89,7 +92,7 @@ async function init() {
 function buildEvoMap(fullDex) {
     fullDex.forEach(p => {
         // Se valida si el bicho tiene una siguiente etapa evolutiva
-        if (p.system.evolution && p.system.evolution.nextStage) {
+        if (p.system && p.system.evolution && p.system.evolution.nextStage) {
             // Se extrae el texto que contiene el criteria
             let criteria = p.system.evolution.criteria || "";
             let match = criteria.match(/\d+/); // Limpiamos y dejamos solo el número
@@ -102,7 +105,7 @@ function buildEvoMap(fullDex) {
                 let evoluciones = p.system.evolution.nextStage.split(',').map(s => normalizarNombre(s));
 
                 // Le asignamos ese nivel mínimo a cada una de las evoluciones
-                evoluciones.forEach(evoName =>{
+                evoluciones.forEach(evoName => {
                     evoMap[evoName] = lvl;
                 });
 
@@ -111,7 +114,7 @@ function buildEvoMap(fullDex) {
             }
         }
     });
-console.log("Mapa de evoluciones generado: ", evoMap);
+    console.log("Mapa de evoluciones generado: ", evoMap);
 }
 
 /**
@@ -236,42 +239,66 @@ function generarStats(p, lvl) {
         SPATK: p.system.stats.spatk.base, SPDEF: p.system.stats.spdef.base, SPEED: p.system.stats.spd.base
     };
 
+    // Aplicar la naturaleza (+2/-2) a los stats base
     let baseNaturaleza = { ...base };
     if (nature.up !== nature.down) {
         baseNaturaleza[nature.up] += 2;
         baseNaturaleza[nature.down] = Math.max(1, baseNaturaleza[nature.down] - 2);
     }
 
-    let actual = { ...baseNaturaleza };
-    let puntos = lvl;
+    let puntosExtra = { HP: 0, ATK: 0, DEF: 0, SPATK: 0, SPDEF: 0, SPEED: 0 };
     let keys = ["HP", "ATK", "DEF", "SPATK", "SPDEF", "SPEED"];
 
-    // Distribución aleatoria de puntos de nivel
+    // Añadiendo el sistema de los BSPs
+    let statsBSP = keys.map(k => ({
+        stat: k,
+        valor: baseNaturaleza[k],
+        azar: Math.random() // Para los empates lo saca aleatorio.
+    }));
+
+    // Ordenamos los stats por su valor base de mayor a menor y en caso de empate por el azar
+    statsBSP.sort((a, b) => {
+        if (b.valor === a.valor) {
+            return b.azar - a.azar; // Si hay empate, el que tenga el azar más alto va primero
+        }
+        return b.valor - a.valor;
+    });
+
+    // Calculamos cuantas decenas tenemos en el nivel
+    let multiplicadorBsp = Math.floor(lvl / 10);
+
+    if (multiplicadorBsp > 0) {
+        // Asignamos los bonos: Primario (+3), Secundario (+2) y Terciario (+1)
+        puntosExtra[statsBSP[0].stat] += (3 * multiplicadorBsp); // El stat más alto recibe el bono primario
+        puntosExtra[statsBSP[1].stat] += (2 * multiplicadorBsp); // El segundo stat más alto recibe el bono secundario
+        puntosExtra[statsBSP[2].stat] += (1 * multiplicadorBsp); // El tercer stat más alto recibe el bono terciario 
+    }
+
+    // Distribución de puntos de nivel
+    let puntos = lvl; // Puntos a distribuir equivalentes al nivel del Pokémon
     while (puntos > 0) {
         let k = keys[Math.floor(Math.random() * keys.length)];
-        actual[k] += 1;
+        puntosExtra[k] += 1;
         puntos--;
     }
 
-    let maxHP = (lvl * 2) + (actual.HP * 3) + 10; // Formula para calcular los PVs
-
-    let jsonVTT = {
-        "CharType": 0, "nickname": "", "species": p.name,
-        "type1": p.system.type1, "type2": p.system.type2 || "Ninguno",
-        "Level": lvl, "EXP": 0, "EXP_max": 0, "HeldItem": "", "Gender": "",
-        "Nature": `${nature.name} [+${nature.up} -${nature.down}]`,
-        "Height": p.system.size, "WeightClass": p.system.weightClass,
-        "base_HP": baseNaturaleza.HP, "base_ATK": baseNaturaleza.ATK, "base_DEF": baseNaturaleza.DEF,
-        "base_SPATK": baseNaturaleza.SPATK, "base_SPDEF": baseNaturaleza.SPDEF, "base_SPEED": baseNaturaleza.SPEED,
-        "HP": maxHP, "ATK": actual.ATK, "DEF": actual.DEF, "SPATK": actual.SPATK,
-        "SPDEF": actual.SPDEF, "SPEED": actual.SPEED,
-        "Capabilities": p.system.capabilities,
-        "Struggle_Type": "Ninguno", "Struggle_DType": "Físico", "Struggle_DB": 4, "Struggle_AC": 4, "Struggle_Range": "Melé, 1 Objetivo",
-        "Ability1": { "Name": (p.system.lists.abilitiesBasic || "").split(",")[0], "Freq": "Pasivo", "Info": "" },
-        "sniper": 0, "snipern": 0, "twist": 0, "flashfire": 0, "weird": 0, "damp": 0, "aurastn": 0, "defeat": 0, "hustle": 0, "courage": 0, "lastctrue": 0
+    // STATS ACTUALES: Suma de la Base (Naturaleza) + Los puntos extra (BSP y Nivel)
+    let statsActuales = {
+        HP: baseNaturaleza.HP + puntosExtra.HP,
+        ATK: baseNaturaleza.ATK + puntosExtra.ATK,
+        DEF: baseNaturaleza.DEF + puntosExtra.DEF,
+        SPATK: baseNaturaleza.SPATK + puntosExtra.SPATK,
+        SPDEF: baseNaturaleza.SPDEF + puntosExtra.SPDEF,
+        SPEED: baseNaturaleza.SPEED + puntosExtra.SPEED
     };
 
-    return { p, jsonVTT };
+    let maxHP = (statsActuales.HP * 3) + (statsActuales.DEF + statsActuales.SPDEF) + 10; // Formula para calcular los PVs
+
+    let jsonVTT = {
+        "CharType": 0, "nickname": "", "species": p.name, "type1": p.system.type1, "type2": p.system.type2 || "Ninguno", "Level": lvl, "EXP": 0, "EXP_max": 0, "HeldItem": "", "Gender": "", "Nature": `${nature.name} [+${nature.up} -${nature.down}]`, "Height": p.system.size, "WeightClass": p.system.weightClass, "base_HP": baseNaturaleza.HP, "base_ATK": baseNaturaleza.ATK, "base_DEF": baseNaturaleza.DEF, "base_SPATK": baseNaturaleza.SPATK, "base_SPDEF": baseNaturaleza.SPDEF, "base_SPEED": baseNaturaleza.SPEED, "HP": maxHP, "ATK": statsActuales.ATK, "DEF": statsActuales.DEF, "SPATK": statsActuales.SPATK, "SPDEF": statsActuales.SPDEF, "SPEED": statsActuales.SPEED, "Capabilities": p.system.capabilities, "Struggle_Type": "Ninguno", "Struggle_DType": "Físico", "Struggle_DB": 4, "Struggle_AC": 4, "Struggle_Range": "Melé, 1 Objetivo", "Ability1": { "Name": (p.system.lists.abilitiesBasic || "").split(",")[0], "Freq": "Pasivo", "Info": "" }, "sniper": 0, "snipern": 0, "twist": 0, "flashfire": 0, "weird": 0, "damp": 0, "aurastn": 0, "defeat": 0, "hustle": 0, "courage": 0, "lastctrue": 0
+    };
+
+    return { p, jsonVTT, statsActuales, baseNaturaleza, puntosExtra };
 }
 
 function renderResultados(resultados) {
@@ -285,29 +312,75 @@ function renderResultados(resultados) {
 
     resultados.forEach(res => {
         let card = document.createElement('div');
-        card.className = "pokemon-card";
+        card.className = "pokemon-card mb-4"; // Añadido un margen inferior para separar las tarjetas
+
+        // 1. Aquí convertimos el JSON a una sola línea quitando el 'null, 2'
+        let jsonUnilineal = JSON.stringify(res.jsonVTT);
+
+        // 2. Armamos el HTML de la tarjeta, incluyendo el nuevo botón de copiar
         let tbl = `
             <table class="table table-dark table-bordered mt-2">
                 <tr>
-                    <th>Especie</th><th>Nivel</th><th>Tipos</th><th>Naturaleza</th><th>PVs</th>
+                    <th>Especie</th><th>Nivel</th><th>Tipos</th><th>Naturaleza</th><th>PVs (PS)</th>
                 </tr>
                 <tr>
                     <td>${res.jsonVTT.species}</td><td>${res.jsonVTT.Level}</td>
                     <td><span class="text-capitalize">${res.jsonVTT.type1}</span> / <span class="text-capitalize">${res.jsonVTT.type2}</span></td>
-                    <td>${res.jsonVTT.Nature}</td><td>${res.jsonVTT.HP}</td>
+                    <td>${res.jsonVTT.Nature}</td><td>${res.jsonVTT.HP} (${res.statsActuales.HP})</td>
                 </tr>
                 <tr><th>ATK</th><th>Def</th><th>SATK</th><th>SDEF</th><th>SPD</th></tr>
                 <tr>
-                    <td>${res.jsonVTT.ATK}</td><td>${res.jsonVTT.DEF}</td>
-                    <td><span>${res.jsonVTT.SPATK}</span></td>
-                    <td>${res.jsonVTT.SPDEF}</td><td>${res.jsonVTT.SPEED}</td>
+                    <td>${res.statsActuales.ATK}</td><td>${res.statsActuales.DEF}</td>
+                    <td><span>${res.statsActuales.SPATK}</span></td>
+                    <td>${res.statsActuales.SPDEF}</td><td>${res.statsActuales.SPEED}</td>
                 </tr>
             </table>
-            <strong class="text-light">Datos para importar a VTT (JSON):</strong><br>
-            <textarea class="json-output mt-2" readonly>${JSON.stringify(res.jsonVTT, null, 2)}</textarea>
-            `;
+            
+            <div class="d-flex align-items-center mt-3 mb-1">
+                <strong class="text-light me-3">Datos para importar a VTT (JSON):</strong>
+                <button class="btn btn-sm btn-outline-light btn-copy" type="button" title="Copiar JSON" style="width: 75px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard me-1" viewBox="0 0 16 16">
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+                    </svg>
+                    Copiar
+                </button>
+            </div>
+            <textarea class="json-output w-100 form-control bg-dark text-light" rows="3" readonly>${jsonUnilineal}</textarea>
+        `;
+
         card.innerHTML = tbl;
         div.appendChild(card);
+
+        // 3. Le agregamos el evento de clic al botón de esta tarjeta específica
+        const btnCopy = card.querySelector('.btn-copy');
+        const textArea = card.querySelector('.json-output');
+
+        btnCopy.addEventListener('click', () => {
+            // Copia el texto al portapapeles
+            navigator.clipboard.writeText(textArea.value).then(() => {
+                // Guarda el contenido original del botón
+                const originalHTML = btnCopy.innerHTML;
+
+                // Cambia el diseño temporalmente para dar feedback visual de éxito
+                btnCopy.classList.replace('btn-outline-light', 'btn-success');
+                btnCopy.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2 me-1" viewBox="0 0 16 16">
+                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                    ¡Copiado!
+                `;
+
+                // Devuelve el botón a la normalidad después de 2 segundos
+                setTimeout(() => {
+                    btnCopy.classList.replace('btn-success', 'btn-outline-light');
+                    btnCopy.innerHTML = originalHTML;
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al intentar copiar al portapapeles: ', err);
+                alert("Hubo un error al copiar. Puedes seleccionarlo y presionar Ctrl+C.");
+            });
+        });
     });
 }
 
