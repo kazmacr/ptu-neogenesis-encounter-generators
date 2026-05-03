@@ -53,8 +53,10 @@ Al hacer clic en "Generar Encuentro", los resultados se muestran de manera clara
 3.  **Botón de Copiado Rápido:** Con un solo clic en el botón "Copiar", el JSON se enviará al portapapeles (con *feedback* visual de éxito), dejándolo listo para ser importado en la hoja de personaje de Roll20, Foundry VTT u otro tablero virtual compatible con el sistema de PTU: NeoGénesis.
 
 ---
+## Uso Online
+1. Abrir el enlace de Github Pages: [PTU: NeoGenesis - Encounters Generator](https://kazmacr.github.io/ptu-neogenesis-encounter-generators/)
 
-## Instalación y Uso
+## Instalación y Uso Offline
 1.  Descarga el repositorio en tu computadora.
 2.  Asegúrate de que la carpeta `json` exista y contenga los siguientes 3 archivos fundamentales:
     *   `pokedex_neogenesis.json` (Pokédex Base)

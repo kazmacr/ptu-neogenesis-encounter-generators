@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Explosión/Impacto de fondo -->
+  <path d="M60,5 L70,35 L95,25 L80,50 L110,60 L80,70 L95,95 L70,85 L60,115 L50,85 L25,95 L40,70 L10,60 L40,50 L25,25 L50,35 Z" fill="#ffcb05" stroke="#ff5959" stroke-width="4" stroke-linejoin="round"/>
+  
+  <!-- Pokébola Izquierda -->
+  <g transform="translate(40, 60) rotate(45) scale(0.45)">
+    <circle cx="0" cy="0" r="45" fill="#f0f0f0" stroke="#1e1e1e" stroke-width="6"/>
+    <path d="M -45 0 A 45 45 0 0 1 45 0 Z" fill="#EE1515" stroke="#1e1e1e" stroke-width="6"/>
+    <line x1="-45" y1="0" x2="45" y2="0" stroke="#1e1e1e" stroke-width="8"/>
+    <circle cx="0" cy="0" r="14" fill="#f0f0f0" stroke="#1e1e1e" stroke-width="6"/>
+    <circle cx="0" cy="0" r="6" fill="#f0f0f0" stroke="#1e1e1e" stroke-width="2"/>
+  </g>
+
+  <!-- Pokébola Derecha -->
+  <g transform="translate(80, 60) rotate(-45) scale(0.45)">
+    <circle cx="0" cy="0" r="45" fill="#f0f0f0" stroke="#1e1e1e" stroke-width="6"/>
+    <path d="M -45 0 A 45 45 0 0 1 45 0 Z" fill="#EE1515" stroke="#1e1e1e" stroke-width="6"/>
+    <line x1="-45" y1="0" x2="45" y2="0" stroke="#1e1e1e" stroke-width="8"/>
+    <circle cx="0" cy="0" r="14" fill="#f0f0f0" stroke="#1e1e1e" stroke-width="6"/>
+    <circle cx="0" cy="0" r="6" fill="#f0f0f0" stroke="#1e1e1e" stroke-width="2"/>
+  </g>
+  
+  <!-- Chispas de impacto frontales -->
+  <circle cx="60" cy="60" r="8" fill="#ffffff" />
+  <path d="M60,40 L63,55 L75,50 L65,60 L80,60 L65,65 L75,75 L60,68 L45,75 L55,65 L40,60 L55,60 L45,50 L57,55 Z" fill="#ffffff"/>
+</svg>
