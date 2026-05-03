@@ -41,7 +41,10 @@ Los Pokémon generados reciben una lista de hasta 6 Movimientos + *Forcejeo* tot
 
 ### 3. Asignación de Habilidades y Pokérasgos
 *   **Habilidades:** Analiza la "Lista de Habilidades" de la especie en la Pokédex y otorga entre 1 y 3 habilidades dependiendo de si el Pokémon es nivel bajo, medio (Nvl 20+) o alto (Nvl 40+), mezclando aleatoriamente entre Básicas, Avanzadas y Supremas.
-*   **Pokérasgos:** El Pokémon tiene la posibilidad de generar 0, 1 o 2 Pokérasgos al azar. El sistema lee el campo de prerrequisitos y valida estrictamente que el Pokémon cumpla con el Nivel y/o el Stat mínimo (Ej: *ATK 15*) exigido por el rasgo antes de asignárselo.
+*   **Pokérasgos:** El Pokémon tiene la posibilidad del 0,03% de generar 0, 1 o 2 Pokérasgos al azar. El sistema lee el campo de prerrequisitos y valida estrictamente que el Pokémon cumpla con el Nivel y/o el Stat mínimo (Ej: *ATK 15*) exigido por el rasgo antes de asignárselo.
+
+### 4. Es Shiny?
+El generador da un porcentaje de 0,001% de probabilidades, si, 1 entre 100,000 Pokémon generados de que sea Shiny.
 
 ---
 

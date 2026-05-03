@@ -12500,11 +12500,6 @@
       "Info": "El usuario suma su Rango de Atletismo o Concentración al usar la Capacidad Aromático."
     },
     {
-      "Name": "Atributo Mejorado",
-      "Prerequisitos": "1 PT",
-      "Info": "Un Atributo del usuario sube un Rango. Este Poké Rasgo se puede adquirir varias veces, eligiendo un Atributo diferente cada vez."
-    },
-    {
       "Name": "Atributo Mejorado (Acrobacias)",
       "Prerequisitos": "1 PT",
       "Info": "El Atributo de Acrobacias del usuario sube un Rango."
