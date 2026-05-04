@@ -173,3 +173,9 @@ th {
 .move-item:last-child {
     border-bottom: none !important; /* Quita el borde del último movimiento */
 }
+
+.enlace {
+    color: #4db8ff;
+    font-weight: bolder;
+    text-decoration: none;
+}
