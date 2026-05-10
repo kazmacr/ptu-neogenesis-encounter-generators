@@ -55670,9 +55670,9 @@
       },
       "evolution": {
         "stage": 1,
-        "evoLevel": 25,
-        "nextStage": "Doublade",
-        "criteria": "Nivel 25"
+        "evoLevel": 40,
+        "nextStage": "Aegislash Filo",
+        "criteria": "Nivel 40"
       },
       "megaEvo": {
         "hasMega": false
@@ -55748,9 +55748,9 @@
       },
       "evolution": {
         "stage": 1,
-        "evoLevel": 25,
-        "nextStage": "Doublade",
-        "criteria": "Nivel 25"
+        "evoLevel": 40,
+        "nextStage": "Aegislash Escudo",
+        "criteria": "Nivel 40"
       },
       "megaEvo": {
         "hasMega": false
