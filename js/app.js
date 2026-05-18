@@ -111,6 +111,9 @@ document.getElementById('btnGenerar').addEventListener('click', () => {
     const cantidad = parseInt(document.getElementById('cantidad').value);
     const estricto = document.getElementById('chkEvolucionesEstrictas').checked;
     const forzar = document.getElementById('chkForzarEvolucion').checked;
+    
+    // === NUEVO: Capturamos lo que el usuario escribió en la barra de búsqueda ===
+    const especieEspecifica = document.getElementById('especieEspecifica').value.trim().toLowerCase();
 
     const regionalForms = new Map();
     fullDex.forEach(p => {
@@ -127,6 +130,12 @@ document.getElementById('btnGenerar').addEventListener('click', () => {
     });
 
     let pool = fullDex.filter(p => {
+        // === NUEVO: Si hay un nombre específico, ignoramos los demás filtros ===
+        if (especieEspecifica) {
+            return p.name.toLowerCase() === especieEspecifica;
+        }
+
+        // Si la barra de búsqueda está vacía, se aplican los filtros normales
         let sysHabitat = (p.system.habitats || "").toLowerCase();
         let hMatch = habitats.includes("Todos") || habitats.some(h => sysHabitat.includes(h.toLowerCase()));
 
@@ -405,6 +414,21 @@ function generarStats(p, lvl) {
     };
 
     return { p, jsonVTT, statsActuales, isShiny };
+}
+
+// ========== NUEVO: POBLAR LA LISTA DE BÚSQUEDA ==========
+function popularDatalistEspecies(fullDex) {
+    const datalist = document.getElementById('listaEspecies');
+    datalist.innerHTML = ""; 
+    
+    // Extraemos todos los nombres, quitamos duplicados y ordenamos alfabéticamente
+    const nombres = [...new Set(fullDex.map(p => p.name))].sort();
+    
+    nombres.forEach(nombre => {
+        let option = document.createElement('option');
+        option.value = nombre;
+        datalist.appendChild(option);
+    });
 }
 
 // Función para convertir la DB de PTU en su tirada de dados

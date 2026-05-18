@@ -12,6 +12,17 @@
     <div class="container my-4">
         <h1>Generador de Encuentros Aleatorios (PTU NeoGénesis)</h1>
         
+        <div class="row g-3 mb-2">
+            <div class="col-12 form-group">
+                <label for="especieEspecifica">Nombre de la especie (Opcional):</label>
+                <input type="text" id="especieEspecifica" list="listaEspecies" placeholder="Escribe para buscar (ej. Charizard, Eevee...)" autocomplete="off">
+                <datalist id="listaEspecies">
+                    </datalist>
+                <small style="color: #bbb; margin-top: 5px;">Si seleccionas un Pokémon específico aquí, los filtros de abajo serán ignorados.</small>
+            </div>
+        </div>
+        <hr style="border-color: #555; margin-bottom: 20px;">
+        
         <div class="row g-3 mb-4">
             
             <div class="col-12 col-md-6 col-lg-3 form-group">
