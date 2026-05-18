@@ -71,9 +71,10 @@ async function init() {
         }
 
         buildEvoMap([...pokedexComunes, ...pokedexLegendaria]);
-        console.log("Sistema cargado y listo.");
+        configurarAutocompletado([...pokedexComunes, ...pokedexLegendaria]);
+        console.log("================= Sistema cargado y listo. =================");
     } catch (e) {
-        console.error('Error crítico al cargar las bases de datos.', e);
+        console.error('================= Error crítico al cargar las bases de datos. =================', e);
     }
 }
 
@@ -416,18 +417,55 @@ function generarStats(p, lvl) {
     return { p, jsonVTT, statsActuales, isShiny };
 }
 
-// ========== NUEVO: POBLAR LA LISTA DE BÚSQUEDA ==========
-function popularDatalistEspecies(fullDex) {
-    const datalist = document.getElementById('listaEspecies');
-    datalist.innerHTML = ""; 
+// ========== AUTOCOMPLETADO PERSONALIZADO ==========
+function configurarAutocompletado(fullDex) {
+    const inputEspecie = document.getElementById('especieEspecifica');
+    const listaEspecies = document.getElementById('listaEspecies');
     
-    // Extraemos todos los nombres, quitamos duplicados y ordenamos alfabéticamente
+    // Extraer nombres únicos y ordenados
     const nombres = [...new Set(fullDex.map(p => p.name))].sort();
-    
-    nombres.forEach(nombre => {
-        let option = document.createElement('option');
-        option.value = nombre;
-        datalist.appendChild(option);
+
+    // Escuchar cada vez que el usuario escribe algo
+    inputEspecie.addEventListener('input', function() {
+        const valor = this.value.toLowerCase().trim();
+        listaEspecies.innerHTML = ''; // Limpiar la lista anterior
+        
+        if (!valor) {
+            listaEspecies.style.display = 'none'; // Si borra todo, ocultar menú
+            return;
+        }
+
+        // Buscar coincidencias (sin importar si está al inicio, en medio o al final)
+        const filtrados = nombres.filter(nombre => nombre.toLowerCase().includes(valor));
+
+        if (filtrados.length > 0) {
+            listaEspecies.style.display = 'block'; // Mostrar el menú
+            
+            filtrados.forEach(nombre => {
+                const li = document.createElement('li');
+                
+                // Un detalle visual pro: Resaltamos en amarillo la parte que el usuario escribió
+                const regex = new RegExp(`(${valor})`, "gi");
+                li.innerHTML = nombre.replace(regex, "<span style='color: #ffcb05;'>$1</span>");
+                
+                // Si hace clic en una opción, la pasamos al input y cerramos el menú
+                li.addEventListener('click', () => {
+                    inputEspecie.value = nombre;
+                    listaEspecies.style.display = 'none';
+                });
+                
+                listaEspecies.appendChild(li);
+            });
+        } else {
+            listaEspecies.style.display = 'none';
+        }
+    });
+
+    // Ocultar el menú si el usuario hace clic en cualquier otro lado de la pantalla
+    document.addEventListener('click', function(e) {
+        if (e.target !== inputEspecie && e.target !== listaEspecies) {
+            listaEspecies.style.display = 'none';
+        }
     });
 }
 

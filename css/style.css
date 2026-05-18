@@ -183,3 +183,41 @@ th {
     font-weight: bolder;
     text-decoration: none;
 }
+
+/* =========================================
+   AUTOCOMPLETADO PERSONALIZADO (BUSCADOR)
+   ========================================= */
+#listaEspecies {
+    position: absolute;
+    top: 70px; /* Lo empuja justo debajo del input */
+    left: 10px;
+    right: 10px;
+    z-index: 1000; /* Asegura que flote por encima de todo lo demás */
+    background-color: #3d3d3d;
+    border: 1px solid #555;
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 250px; /* Altura máxima antes de hacer scroll */
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+#listaEspecies li {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: white;
+    border-bottom: 1px solid #4a4a4a;
+    transition: background-color 0.2s;
+}
+
+#listaEspecies li:last-child {
+    border-bottom: none;
+}
+
+#listaEspecies li:hover {
+    background-color: #ffcb05;
+    color: #1e1e1e;
+    font-weight: bold;
+}
