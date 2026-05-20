@@ -559,7 +559,7 @@ function renderResultados(resultados) {
                         </div>
                     </div>
                     <div style="font-size: 0.85em; color: #bbb;" class="mb-1">
-                        <strong>AC:</strong> ${m.AC} &nbsp;|&nbsp; <strong>Daño:</strong> ${dbText} &nbsp;|&nbsp; <strong>Rango:</strong> ${m.Range}
+                        <strong>AC:</strong> ${m.AC} &nbsp;|&nbsp; <strong>Daño:</strong> ${dbText} &nbsp;|&nbsp; <strong>Rango:</strong> ${m.Range} &nbsp;|&nbsp; <strong>Freq:</strong> ${m.Freq}
                     </div>
                     <div style="font-size: 0.85em; color: #ddd;">
                         <em>${m.Effects}</em>
