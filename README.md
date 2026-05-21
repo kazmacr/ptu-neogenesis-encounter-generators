@@ -2,19 +2,20 @@
 
 Herramienta web ligera y automatizada diseñada para los Directores de Juego (DJs) del sistema de rol de mesa **Pokémon Tabletop United (PTU): NeoGénesis**. 
 
-Este proyecto permite generar encuentros salvajes de manera rápida y precisa, respetando todas las mecánicas en cuanto a la distribución de Stats, movimientos por lista de movimientos y movimientos de tutor por Tier, habilidades, Pokérasgos; como también evolución y formas regionales.
+Este proyecto permite generar encuentros salvajes de manera rápida y precisa, respetando todas las mecánicas del sistema actual en cuanto a la distribución de Stats, movimientos por lista por nivel y movimientos de tutor por Tier, habilidades, Pokérasgos; como también evolución y formas regionales.
 
 ---
 
 ## Características Principales
 El generador filtra la base de datos completa de Pokémon según las necesidades específicas del encuentro que el DJ quiera realizar siguiendo los siguientes parámetros de filtrado:
 
+*   **Nombre de la especie (Opcional):** Filtra por una especie en particular. _De elegir un Pokémon específico aquí, los filtros de abajo serán ignorados._
 *   **Hábitat:** Filtra por entornos específicos (Bosque, Cueva, Océano, Ultra-Espacio, etc.).
 *   **Tipo:** Selecciona uno o varios tipos elementales (Fuego, Dragón, Hada, etc.).
 *   **Región:** Permite elegir Pokémon pertenecientes a regiones específicas (Kanto, Johto, Alola, Paldea, etc.). El sistema es capaz de priorizar las formas regionales correctas (ej. generar un Rattata de Alola en lugar del normal si se elige dicha región).
 *   **Nivel y Cantidad:** Establece un rango numérico (ej. del nivel 10 al 15) y define cuántos Pokémon aparecerán en la escena.
 *   **Reglas de Evolución y Especies:**
-    *   *Incluir Legendarios:* Opción para permitir la aparición de Pokémons incluidos en la Pokédex Legendaria.
+    *   *Incluir Legendarios:* Opción para permitir la aparición de Pokémons incluidos en la Pokédex Legendaria, lengendarios, paradojas, ultraentes, singulares, etc.
     *   *Evoluciones Estrictas:* Evita que aparezcan Pokémons evolucionados a niveles inferiores a los que dicta la regla (ej. no aparecerá un Charizard nivel 10).
     *   *Forzar Evolución:* Evita que aparezcan etapas base si su nivel ya supera el necesario para evolucionar (ej. no aparecerá un Caterpie nivel 20).
     *   *Mega Evoluciones:* Opción para incluir o excluir estas formas temporales. *(Incluida pero no funcional por el momento)*.
@@ -28,7 +29,7 @@ El verdadero potencial de esta herramienta reside en su algoritmo de generación
 *   **Naturaleza:** Se asigna una naturaleza al azar que aplica un modificador de `+2` a un Stat y `-2` a otro (con un mínimo de 1).
 *   **Bono de Stats Principales (BSP):** El sistema lee los Stats Base (tras la naturaleza), identifica los 3 más altos y aplica el BSP retroactivamente según el nivel del Pokémon (Primario +3, Secundario +2, Terciario +1 por cada 10 niveles). *Nota: En caso de empate en los Stats Base, el sistema decide el orden al azar simulando la decisión del entrenador.*
 *   **Puntos de Nivel:** Los puntos restantes correspondientes al nivel actual se distribuyen de manera completamente aleatoria entre los 6 Stats.
-*   **Puntos de Vida (PVs):** Calcula la vida máxima automáticamente utilizando la fórmula oficial de NeoGénesis: `(PS x 3) + Stats defensivos + 10`.
+*   **Puntos de Vida (PVs):** Calcula la vida máxima automáticamente utilizando la fórmula actual de NeoGénesis: `(PS x 3) + Stats defensivos + 10`.
 
 ### 2. Generador Inteligente de Movimientos
 Los Pokémon generados reciben una lista de hasta 6 Movimientos + *Forcejeo* totalmente legal para su nivel:
@@ -53,20 +54,22 @@ Al hacer clic en "Generar Encuentro", los resultados se muestran de manera clara
 
 1.  **Tarjetas Visuales (UI):** Cada Pokémon se despliega en una tarjeta oscura con una tabla limpia de sus Stats. Incluye listas estilizadas con "Badges" (etiquetas de color) para identificar rápidamente la categoría de sus Movimientos (Físico/Especial/Estatus) y Habilidades (Básica/Avanzada/Suprema).
 2.  **Código JSON Unilineal:** Al pie de cada tarjeta se genera un bloque de texto en formato JSON minificado con absolutamente todos los datos procesados.
-3.  **Botón de Copiado Rápido:** Con un solo clic en el botón "Copiar", el JSON se enviará al portapapeles (con *feedback* visual de éxito), dejándolo listo para ser importado en la hoja de personaje de Roll20, Foundry VTT u otro tablero virtual compatible con el sistema de PTU: NeoGénesis.
+3.  **Botón de Copiado Rápido:** Con un solo clic en el botón "Copiar", el JSON se enviará al portapapeles, dejándolo listo para ser importado en la hoja de personaje de Roll20, Foundry VTT u otro tablero virtual compatible con el sistema de PTUNG.
 
 ---
+
 ## Uso Online
-1. Abrir el enlace de Github Pages: [PTU: NeoGenesis - Encounters Generator](https://kazmacr.github.io/ptu-neogenesis-encounter-generators/)
+1. Abrir este enlace de Github Pages: [PTU: NeoGenesis - Encounters Generator](https://kazmacr.github.io/ptu-neogenesis-encounter-generators/)
 
 ## Instalación y Uso Offline
-1.  Descarga el repositorio en tu computadora.
+1.  Descarga el repositorio de Github en tu computadora.
 2.  Asegúrate de que la carpeta `json` exista y contenga los siguientes 3 archivos fundamentales:
     *   `pokedex_neogenesis.json` (Pokédex Base)
     *   `pokedex_legendarios_neogenesis.json` (Pokédex de Legendarios)
     *   `pokemon_core.json` (Base de datos de Movimientos, Habilidades y Pokérasgos)
-3.  Abre el archivo `index.html` en cualquier navegador web moderno. (Es un aplicativo *Client-Side*; no requiere instalaciones por consola, servidores ni conexión constante a internet).
-4.  Selecciona tus filtros y genera el encuentro.
+3.  Abre el archivo `index.html` en cualquier navegador web moderno.
+4. Debido a que se utiliza una API para leer archivos JSON se necesita de la instalación de un servidor web como Apache, XAMPP o WAMP.
+5.  Selecciona tus filtros y genera el encuentro.
 
 ---
 
