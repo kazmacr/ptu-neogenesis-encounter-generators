@@ -586,7 +586,7 @@ function renderResultados(resultados) {
                 <tr>
                     <td>${especieDisplay}</td><td>${res.jsonVTT.Level}</td>
                     <td><span class="text-capitalize">${res.jsonVTT.type1}</span> / <span class="text-capitalize">${res.jsonVTT.type2}</span></td>
-                    <td>${res.jsonVTT.Nature}</td><td>${maxHP} (${res.statsActuales.HP})</td>
+                    <td>${res.jsonVTT.Nature}</td><td>${res.jsonVTT.HP} (${res.statsActuales.HP})</td>
                 </tr>
                 <tr><th>ATK</th><th>Def</th><th>SATK</th><th>SDEF</th><th>SPD</th></tr>
                 <tr>
