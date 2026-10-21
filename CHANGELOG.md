@@ -5,9 +5,9 @@ El siguiente es la lista de cambios y arreglos de Bugs reportados en la aplicaci
 Se agradece reportar cualquier bug para su revisión y posterior arreglo. regionales.
 
 ## Código de colores
-- $\color{red}{\textsf{Bug detectado}}$
-- $\color{green}{\textsf{Bug arreglado}}$
-- $\color{orange}{\textsf{Actualización}}$
+- $\color{red}{\textsf{Bug detectado (Bug)}}$
+- $\color{green}{\textsf{Bug arreglado (Fix)}}$
+- $\color{orange}{\textsf{Actualización (Update)}}$
 
 
 ## Version 1.0.1-Beta _19/05/2026_
