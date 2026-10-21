@@ -586,7 +586,10 @@ function renderResultados(resultados) {
                 <tr>
                     <td>${especieDisplay}</td><td>${res.jsonVTT.Level}</td>
                     <td><span class="text-capitalize">${res.jsonVTT.type1}</span> / <span class="text-capitalize">${res.jsonVTT.type2}</span></td>
-                    <td>${res.jsonVTT.Nature}</td><td>${res.jsonVTT.HP} (${res.statsActuales.HP})</td>
+                    <!-- Línea original con el error del HP en cero: -->
+                    <!--<td>${res.jsonVTT.Nature}</td><td>${res.jsonVTT.HP} (${res.statsActuales.HP})</td> -->
+                    <!-- Nueva línea corregida usando Health: -->
+                    <td>${res.jsonVTT.Nature}</td><td>${res.jsonVTT.Health} (${res.statsActuales.HP})</td>
                 </tr>
                 <tr><th>ATK</th><th>Def</th><th>SATK</th><th>SDEF</th><th>SPD</th></tr>
                 <tr>
